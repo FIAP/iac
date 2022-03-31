@@ -11,11 +11,11 @@ terraform {
 # Região de serviço
 provider "aws" {
     region = "us-east-1"
-    shared_credentials_file = ".aws/credentials"
+    shared_credentials_file = "Credentials"
 }
 
 # VPC
-resource "aws_vpc" "Work VPC" {
+resource "aws_vpc" "Work_VPC" {
     cidr_block           = "10.0.0.0/16"
     enable_dns_hostnames = "true"
 
@@ -25,8 +25,8 @@ resource "aws_vpc" "Work VPC" {
 }
 
 # INTERNET GATEWAY
-resource "aws_internet_gateway" "Work IGW" {
-    vpc_id = aws_vpc.Work_IGW.id
+resource "aws_internet_gateway" "Work_IGW" {
+    vpc_id = aws_vpc.Work_VPC.id
 
     tags = {
         Name = "Work IGW"
@@ -154,7 +154,6 @@ resource "aws_instance" "nagios" {
         service nagios restart
         echo done > /tmp/nagioscore.done
 	EOF
-    key_name = "nagios"
 
     tags = {
         Name = "nagios"
@@ -171,7 +170,7 @@ resource "aws_instance" "node_a" {
         # NCPA Agent Install instructions
         # https://assets.nagios.com/downloads/ncpa/docs/Installing-NCPA.pdf
         yum update -y
-        rpm -Uvh https://assets.nagios.com/downloads/ncpa/ncpa-latest.sle12.x86_64.rpm
+        rpm -Uvh https://assets.nagios.com/downloads/ncpa/ncpa-latest.el7.x86_64.rpm
         systemctl restart ncpa_listener.service
         echo done > /tmp/ncpa-agent.done
         # SNMP Agent install instructions
@@ -182,7 +181,6 @@ resource "aws_instance" "node_a" {
         service snmpd restart
         echo done > /tmp/snmp-agent.done
 	EOF
-    key_name = "nagios"
 
     tags = {
         Name = "node_a"
