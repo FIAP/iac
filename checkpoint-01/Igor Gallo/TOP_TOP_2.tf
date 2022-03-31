@@ -188,4 +188,3 @@ resource "aws_instance" "node_a" {
         Name = "node_a"
     }
 }
-
