@@ -104,7 +104,7 @@ resource "aws_security_group" "Work_Nagios_Security_Group" {
     }
 
     tags = {
-        Name = "Work Security Group"
+        Name = "Work Nagios Security Group"
     }
 }
 
