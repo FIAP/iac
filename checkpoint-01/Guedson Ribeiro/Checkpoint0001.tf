@@ -112,8 +112,8 @@ resource "aws_security_group" "Work_Nagios_Security_Group" {
 resource "aws_instance" "nagios" {
     ami                    = "ami-0c02fb55956c7d316"
     instance_type          = "t2.micro"
-    subnet_id              = aws_subnet.Work_VPC.id
-    vpc_security_group_ids = [aws_security_group.sg_vpc10_public.id]
+    subnet_id              = aws_subnet.Work_Public_Subnet.id
+    vpc_security_group_ids = [aws_security_group.Work_Nagios_Security_Group.id]
 	user_data = <<-EOF
         #!/bin/bash
         # Nagios Core Install Instructions
@@ -163,8 +163,8 @@ resource "aws_instance" "nagios" {
 resource "aws_instance" "node_a" {
     ami                    = "ami-0c02fb55956c7d316"
     instance_type          = "t2.micro"
-    subnet_id              = aws_subnet.Work_VPC.id
-    vpc_security_group_ids = [aws_security_group.sg_vpc10_public.id]
+    subnet_id              = aws_subnet.Work_Public_Subnet.id
+    vpc_security_group_ids = [aws_security_group.Work_Nagios_Security_Group.id]
 	user_data = <<-EOF
         #!/bin/bash
         # NCPA Agent Install instructions
