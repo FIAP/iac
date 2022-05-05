@@ -119,10 +119,10 @@ resource "aws_route_table_association" "sn_association_1c_pub" {
   route_table_id = aws_route_table.vpc10_route_table_pub.id
 }
 
-# SECURITY GROUP
-resource "aws_security_group" "vpc10_Security_Group" {
-    name        = "vpc10_Security_Group"
-    description = "vpc10 Security Group"
+# SECURITY GROUP Publico
+resource "aws_security_group" "vpc10_Security_Group_pub" {
+    name        = "vpc10_Security_Group_pub"
+    description = "vpc10 Security Group_pub"
     vpc_id      = aws_vpc.vpc10.id
     
     egress {
@@ -162,177 +162,114 @@ resource "aws_security_group" "vpc10_Security_Group" {
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-# Criação das Máquinas EC2 da subnet pública 1a
-
-resource "aws_instance" "ws_1" {
-    ami                    = "ami-0c02fb55956c7d316"
-    instance_type          = "t2.micro"
-    subnet_id              = aws_subnet.sn_vpc10_pub_1a.id
-    vpc_security_group_ids = [aws_security_group.vpc10_Security_Group.id]
-	user_data = <<-EOF
-        #!/bin/bash
-        # Nagios Core Install Instructions
-        # https://support.nagios.com/kb/article/nagios-core-installing-nagios-core-from-source-96.html
-        yum update -y
-        setenforce 0
-        cd /tmp
-        yum install -y gcc glibc glibc-common make gettext automake autoconf wget openssl-devel net-snmp net-snmp-utils epel-release
-        yum install -y perl-Net-SNMP
-        yum install -y unzip httpd php gd gd-devel perl postfix
-        cd /tmp
-        wget -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.6.tar.gz
-        tar xzf nagioscore.tar.gz
-        cd /tmp/nagioscore-nagios-4.4.6/
-        ./configure
-        make all
-        make install-groups-users
-        usermod -a -G nagios apache
-        make install
-        make install-daemoninit
-        systemctl enable httpd.service
-        make install-commandmode
-        make install-config
-        make install-webconf
-        iptables -I INPUT -p tcp --destination-port 80 -j ACCEPT
-        ip6tables -I INPUT -p tcp --destination-port 80 -j ACCEPT
-        htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin nagiosadmin
-        service httpd start
-        service nagios start
-        cd /tmp
-        wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.3.3.tar.gz
-        tar zxf nagios-plugins.tar.gz
-        cd /tmp/nagios-plugins-release-2.3.3/
-        ./tools/setup
-        ./configure
-        make
-        make install
-        service nagios restart
-        echo done > /tmp/nagioscore.done
-	EOF
+# SECURITY GROUP Privado
+resource "aws_security_group" "sg_priv" {
+    name        = "sg_priv"
+    description = "Security Group private"
+    vpc_id      = aws_vpc.vpc10.id
+     
+    ingress {
+        description = "All from 10.0.0.0/16"
+        from_port   = 0
+        to_port     = 0
+        protocol    = "-1"
+        cidr_blocks = ["10.0.0.0/16"]
+    }
 
     tags = {
-        Name = "nagios"
+        Name = "sg_priv"
     }
 }
 
-resource "aws_instance" "ws_2" {
-    ami                    = "ami-0c02fb55956c7d316"
-    instance_type          = "t2.micro"
-    subnet_id              = aws_subnet.sn_vpc10_pub_1a.id
-    vpc_security_group_ids = [aws_security_group.vpc10_Security_Group.id]
-	user_data = <<-EOF
-        #!/bin/bash
-        # NCPA Agent Install instructions
-        # https://assets.nagios.com/downloads/ncpa/docs/Installing-NCPA.pdf
-        yum update -y
-        rpm -Uvh https://assets.nagios.com/downloads/ncpa/ncpa-latest.el7.x86_64.rpm
-        systemctl restart ncpa_listener.service
-        echo done > /tmp/ncpa-agent.done
-        # SNMP Agent install instructions
-        # https://www.site24x7.com/help/admin/adding-a-monitor/configuring-snmp-linux.html
-        yum update -y
-        yum install net-snmp -y
-        echo "rocommunity public" >> /etc/snmp/snmpd.conf
-        service snmpd restart
-        echo done > /tmp/snmp-agent.done
-	EOF
+# DB Grupo de Subnet
+resource "aws_db_subnet_group" "rds_vpc10_sn_group" {
+    name       = "rds-vpc10-sn-group"
+    subnet_ids = [ aws_subnet.sn_vpc10_priv_1a.id, aws_subnet.sn_vpc10_priv_1c.id ]
 
     tags = {
-        Name = "node_a"
+        Name = "rds-vpc10-sn-group"
     }
 }
 
-
-# Criação das Máquinas EC2 da subnet pública 1c
-
-resource "aws_instance" "ws_3" {
-    ami                    = "ami-0c02fb55956c7d316"
-    instance_type          = "t2.micro"
-    subnet_id              = aws_subnet.sn_vpc10_pub_1c.id
-    vpc_security_group_ids = [aws_security_group.vpc10_Security_Group.id]
-	user_data = <<-EOF
-        #!/bin/bash
-        # Nagios Core Install Instructions
-        # https://support.nagios.com/kb/article/nagios-core-installing-nagios-core-from-source-96.html
-        yum update -y
-        setenforce 0
-        cd /tmp
-        yum install -y gcc glibc glibc-common make gettext automake autoconf wget openssl-devel net-snmp net-snmp-utils epel-release
-        yum install -y perl-Net-SNMP
-        yum install -y unzip httpd php gd gd-devel perl postfix
-        cd /tmp
-        wget -O nagioscore.tar.gz https://github.com/NagiosEnterprises/nagioscore/archive/nagios-4.4.6.tar.gz
-        tar xzf nagioscore.tar.gz
-        cd /tmp/nagioscore-nagios-4.4.6/
-        ./configure
-        make all
-        make install-groups-users
-        usermod -a -G nagios apache
-        make install
-        make install-daemoninit
-        systemctl enable httpd.service
-        make install-commandmode
-        make install-config
-        make install-webconf
-        iptables -I INPUT -p tcp --destination-port 80 -j ACCEPT
-        ip6tables -I INPUT -p tcp --destination-port 80 -j ACCEPT
-        htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin nagiosadmin
-        service httpd start
-        service nagios start
-        cd /tmp
-        wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-2.3.3.tar.gz
-        tar zxf nagios-plugins.tar.gz
-        cd /tmp/nagios-plugins-release-2.3.3/
-        ./tools/setup
-        ./configure
-        make
-        make install
-        service nagios restart
-        echo done > /tmp/nagioscore.done
-	EOF
-
-    tags = {
-        Name = "nagios"
+resource "aws_db_parameter_group" "rds_vpc10_pg" {
+    name   = "rds-vpc10-pg"
+    family = "mysql8.0"
+    
+    parameter {
+        name  = "character_set_server"
+        value = "utf8"
+    }
+    
+    parameter {
+        name  = "character_set_database"
+        value = "utf8"
     }
 }
 
-resource "aws_instance" "ws_4" {
-    ami                    = "ami-0c02fb55956c7d316"
-    instance_type          = "t2.micro"
-    subnet_id              = aws_subnet.sn_vpc10_pub_1c.id
-    vpc_security_group_ids = [aws_security_group.vpc10_Security_Group.id]
-	user_data = <<-EOF
-        #!/bin/bash
-        # NCPA Agent Install instructions
-        # https://assets.nagios.com/downloads/ncpa/docs/Installing-NCPA.pdf
-        yum update -y
-        rpm -Uvh https://assets.nagios.com/downloads/ncpa/ncpa-latest.el7.x86_64.rpm
-        systemctl restart ncpa_listener.service
-        echo done > /tmp/ncpa-agent.done
-        # SNMP Agent install instructions
-        # https://www.site24x7.com/help/admin/adding-a-monitor/configuring-snmp-linux.html
-        yum update -y
-        yum install net-snmp -y
-        echo "rocommunity public" >> /etc/snmp/snmpd.conf
-        service snmpd restart
-        echo done > /tmp/snmp-agent.done
-	EOF
+# DB INSTANCE
+resource "aws_db_instance" "rds_db_notifier" {
+    identifier             = "rds-db-notifier"
+    engine                 = "mysql"
+    engine_version         = "8.0.23"
+    instance_class         = "db.t3.micro"
+    storage_type           = "gp2"
+    allocated_storage      = "20"
+    max_allocated_storage  = 0
+    monitoring_interval    = 0
+    name                   = "notifier"
+    username               = "admin"
+    password               = "adminpwd"
+    skip_final_snapshot    = true
+    db_subnet_group_name   = aws_db_subnet_group.rds_vpc10_sn_group.name
+    parameter_group_name   = aws_db_parameter_group.rds_vpc10_pg.name
+    vpc_security_group_ids = [ aws_vpc.vpc10.id ]
 
     tags = {
-        Name = "node_a"
+        Name = "rds-db-notifier"
     }
+
 }
 
+resource "aws_lb" "elb_ws" {
+  name               = "elb-ws"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.lb_sg.id]
+  subnets            = [for subnet in aws_subnet.public : subnet.id]
 
+  enable_deletion_protection = true
+
+  tags = {
+    Environment = "production"
+  }
+}
+
+resource "aws_lb_target_group" "elb_vpc10_ws" {
+  name     = "elb-ws"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.vpc10.id
+}
+
+resource "aws_vpc" "vpc10" {
+  cidr_block = "10.0.0.0/16"
+}
+
+resource "aws_lb_listener" "elb_vpc10_listener" {
+  load_balancer_arn = aws_lb.front_end.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "arn:aws:iam::187416307283:server-certificate/test_cert_rab3wuqwgja25ct3n4jdj2tzu4"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.elb_vpc10_ws.arn
+  }
+}
+
+resource "aws_launch_template" "foobar" {
+  name_prefix   = "foobar"
+  image_id      = "ami-1a2b3c"
+  instance_type = "t2.micro"
+}
