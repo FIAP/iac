@@ -313,8 +313,8 @@ resource "aws_lb_listener" "elb_vpc10_listener" {
 }
 
 # AUTO SCALING GROUP
-resource "aws_autoscaling_group" "asg_ws_notify" {
-    name                = "asg_ws_notify"
+resource "aws_autoscaling_group" "asg_ws" {
+    name                = "asg_ws"
     vpc_zone_identifier = [aws_subnet.sn_vpc10_pub_1a.id, aws_subnet.sn_vpc10_pub_1c.id]
     desired_capacity    = "2"
     min_size            = "1"
