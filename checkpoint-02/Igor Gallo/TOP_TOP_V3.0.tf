@@ -327,3 +327,4 @@ resource "aws_autoscaling_group" "asg_ws" {
     }
    
 }
+
