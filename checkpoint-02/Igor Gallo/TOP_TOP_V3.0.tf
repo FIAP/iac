@@ -243,7 +243,8 @@ resource "aws_db_instance" "rds_db_notifier" {
     db_subnet_group_name   = aws_db_subnet_group.rds_vpc10_sn_group.name
     parameter_group_name   = aws_db_parameter_group.rds_vpc10_pg.name
     vpc_security_group_ids = [ aws_security_group.sg_priv.id ]
-
+    port = "3306"
+    multi_az = true
     tags = {
         Name = "rds-db-notifier"
     }
