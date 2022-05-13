@@ -44,7 +44,6 @@ resource "aws_instance" "nagios" {
         service nagios restart
         echo done > /tmp/nagioscore.done
 	EOF
-    key_name = "nagios"
 
     tags = {
         Name = "nagios"
@@ -72,7 +71,6 @@ resource "aws_instance" "node_a" {
         service snmpd restart
         echo done > /tmp/snmp-agent.done
 	EOF
-    key_name = "nagios"
 
     tags = {
         Name = "node_a"
