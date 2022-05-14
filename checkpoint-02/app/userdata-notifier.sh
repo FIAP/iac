@@ -13,7 +13,7 @@ sudo systemctl enable httpd
 cat <<EOT >> /var/www/config.php
 <?php
 
-define('DB_SERVER', '[replace with rds_endpoint]');
+define('DB_SERVER', 'rdsdbnotifier.cssvfg7tkepn.us-east-1.rds.amazonaws.com:3306');
 define('DB_USERNAME', 'admin');
 define('DB_PASSWORD', 'adminpwd');
 define('DB_DATABASE', 'notifier');
