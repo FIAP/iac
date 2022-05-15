@@ -190,49 +190,51 @@ resource "aws_launch_template" "lt_app_notify" {
 }
 
 # APPLICATION LOAD BALANCER
-resource "aws_lb" "lb_app_notify" {
-    name               = "lb-app-notify"
+resource "aws_lb" "elb_ws" {
+    name               = "elb-ws"
     load_balancer_type = "application"
     subnets            = [aws_subnet.sn_vpc10_pub_1a.id, aws_subnet.sn_vpc10_pub_1c.id]
     security_groups    = [aws_security_group.sg_pub.id]
     
     tags = {
-        Name = "lb_app_notify"
+        Name = "elb_ws"
     }
 }
 
 # APPLICATION LOAD BALANCER TARGET GROUP
-resource "aws_lb_target_group" "tg_app_notify" {
+resource "aws_lb_target_group" "tg_ws" {
     name     = "tg-app-notify"
     vpc_id   = aws_vpc.vpc10.id
     protocol = "HTTP"
     port     = "80"
 
     tags = {
-        Name = "tg_app_notify"
+        Name = "tg_ws"
     }
 }
 
 # APPLICATION LOAD BALANCER LISTENER
 resource "aws_lb_listener" "listener_app_notify" {
-    load_balancer_arn = aws_lb.lb_app_notify.arn
+    load_balancer_arn = aws_lb.elb_ws.arn
     protocol          = "HTTP"
     port              = "80"
     
     default_action {
         type             = "forward"
-        target_group_arn = aws_lb_target_group.tg_app_notify.arn
+        target_group_arn = aws_lb_target_group.tg_ws.arn
     }
 }
 
+
+
 # AUTO SCALING GROUP
-resource "aws_autoscaling_group" "asg_app_notify" {
-    name                = "asg_app_notify"
+resource "aws_autoscaling_group" "asg_ws" {
+    name                = "asg_ws"
     vpc_zone_identifier = [aws_subnet.sn_vpc10_pub_1a.id, aws_subnet.sn_vpc10_pub_1c.id]
     desired_capacity    = "2"
     min_size            = "1"
     max_size            = "4"
-    target_group_arns   = [aws_lb_target_group.tg_app_notify.arn]
+    target_group_arns   = [aws_lb_target_group.tg_ws.arn]
 
     launch_template {
         id      = aws_launch_template.lt_app_notify.id
