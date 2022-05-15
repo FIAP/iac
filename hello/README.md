@@ -1,7 +1,7 @@
 # Terraform Hello World
 
 
-## AWS Provider
+## Introdução
 
 O [Terraform](https://www.terraform.io/) é uma ferramenta para construir, alterar e controlar a infraestrutura de forma segura e eficiente. O Terraform pode gerenciar provedores de serviços existentes e populares como OpenStack, Azure, AWS, Digital Ocean, entre outras, bem como soluções internas personalizadas.
 
@@ -10,11 +10,69 @@ Os arquivos de configuração do Terraform descrevem os componentes necessários
 A infraestrutura que o Terraform pode gerenciar inclui componentes de baixo nível, como instâncias de computação, armazenamento e redes, bem como componentes de alto nível, como entradas DNS, recursos SaaS, etc.
 
 
-## Pre-req: Terraform
+## Pre-req: Instalar/Configurar Git client
 
-1. Fazer o *download* do Terraform em https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_windows_386.zip
+1. Baixar e configurar o Git client conforme instruções em [https://git-scm.com/downloads](https://git-scm.com/downloads).
+
+2. Testar a instalação, abrindo o terminal de comando e digitando *git* como no exemplo abaixo.
+
+    ```
+    $ git
+    usage: git [--version] [--help] [-C <path>] [-c <name>=<value>]
+               [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+               [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]      
+               [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+               [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+               <command> [<args>]
+
+    These are common Git commands used in various situations:
+
+    start a working area (see also: git help tutorial)
+       clone             Clone a repository into a new directory
+       init              Create an empty Git repository or reinitialize an existing one 
+
+    work on the current change (see also: git help everyday)
+       add               Add file contents to the index
+       mv                Move or rename a file, a directory, or a symlink
+       restore           Restore working tree files
+       rm                Remove files from the working tree and from the index
+       sparse-checkout   Initialize and modify the sparse-checkout
+
+    examine the history and state (see also: git help revisions)
+       bisect            Use binary search to find the commit that introduced a bug     
+       diff              Show changes between commits, commit and working tree, etc     
+       grep              Print lines matching a pattern
+       log               Show commit logs
+       show              Show various types of objects
+       status            Show the working tree status
+
+    grow, mark and tweak your common history
+       branch            List, create, or delete branches
+       commit            Record changes to the repository
+       merge             Join two or more development histories together
+       rebase            Reapply commits on top of another base tip
+       reset             Reset current HEAD to the specified state
+       switch            Switch branches
+       tag               Create, list, delete or verify a tag object signed with GPG    
+
+    collaborate (see also: git help workflows)
+       fetch             Download objects and refs from another repository
+       pull              Fetch from and integrate with another repository or a local branch
+       push              Update remote refs along with associated objects
+
+    'git help -a' and 'git help -g' list available subcommands and some
+    concept guides. See 'git help <command>' or 'git help <concept>'
+    to read about a specific subcommand or concept.
+    See 'git help git' for an overview of the system.
+    $
+    ```
+
+
+## Pre-req: Instalar/Configurar Terraform client
+
+1. Fazer o *download* do Terraform em [https://www.terraform.io/downloads](https://www.terraform.io/downloads).
     
-2. Descomprimir o arquivo baixado no diretório *C:\Windows\System32*
+2. Descompactar o arquivo baixado no diretório *C:\Windows\System32*.
    
 3. Testar a instalação, abrindo o terminal de comando e digitando *terraform -h* como no exemplo abaixo.
 
@@ -61,35 +119,16 @@ A infraestrutura que o Terraform pode gerenciar inclui componentes de baixo nív
     ```
 
 
-## Pre-req: Conta AWS
+## Pre-req: Clonar do GitHub o código de exemplo *hello*
 
-1. Abrir o *AWS Academy* e iniciar o ambiente SandBox.
-
-2. Capturar as credenciais de acesso da conta SandBox e guardar essa info para uma etapa posterior.
-
-    ```
-    $ cat ~/.aws/credentials 
-    [default]
-    aws_access_key_id = ASIAV2XAOBJRRVNBXJL2
-    aws_secret_access_key = ew0xROrRLYino1QRx9ds1UXM7iJUjwnx9E3T
-    aws_session_token = FwoGZXIvYXdzEKv//////////wEaDF0S2MnqCAf5Z8Ov6yK9AaQG4G7B/TiV4VCqyJqJr9YA3n7802QTr92WYxKppnODY8d/8efpvPbUX+MspFfCo+szvoqW7fqIh00s/lJTwbQ0HZRboKjNnoEXF5+c+8soOUfKEXjtuU8BLKi73Hq1GEiubqHdHbxTUgWL5nwF9UnC+ilc/n//1qSbuH+Ltbhc6VgUb6ZbQf9Pn1z/6t46wUofOmHZu8qO37qfNh1K9G9qZjTQ/dvGSSnoSzk93uzbOgw4/KPnSjd0uSRBjIt3NiZ7TlpR/ie4GLu3r4k3YPBB3u4UoYbe3VBzxZ/OhBp1bVvH9FaCi4R8sN1
-    ```
- 
-
-## Pre-req: Visual Studio Code e extensão do GitHub
-
-1. Abrir o *Visual Studio Code* e verificar se a extensão *GitHub Pull Requests and Issues* está instalada.
-
-   ![GitHub Extension](/hello/images/vscode-extension-github.png)
-
-2. Clonar o repositório *https://github.com/FIAP/iac*
+1. Clonar repositório https://github.com/FIAP/iac
 
    - Pelo Visual Studio Code:
     ![Clone Repository](/hello/images/clone-repository.png)
 
    - Pelo terminal:
     ```
-    $ git clone https://github.com/FIAP/iac
+    $ git clone [https://github.com/FIAP/iac](https://github.com/FIAP/iac)
     Cloning into 'iac'...
     remote: Enumerating objects: 10, done.
     remote: Counting objects: 100% (10/10), done.
@@ -101,139 +140,43 @@ A infraestrutura que o Terraform pode gerenciar inclui componentes de baixo nív
     $
     ```
 
-3. Conferir o conteúdo do [template](https://github.com/FIAP/iac/blob/master/hello/main.tf):
 
-   - Pelo Visual Studio Code:
-   ![main.tf file](/hello/images/main-file.png)
+## Pre-req: Configurar credencial de acesso à conta AWS
 
-   - Pelo terminal:
+1. Abrir o *AWS Academy* e iniciar o ambiente SandBox.
+
+2. Capturar as credenciais de acesso da conta SandBox e guardar essa info.
+
     ```
-    $ cd hello/
-    $ cat main.tf 
-    # PROVIDER
-    terraform {
-      required_providers {
-        aws = {
-          source  = "hashicorp/aws"
-          version = "~> 3.0"
-        }
-      }
-    }
-
-    # REGION
-    provider "aws" {
-        region = "us-east-1"
-        shared_credentials_file = ".aws/credentials"
-    }
-
-    # VPC
-    resource "aws_vpc" "Hello_VPC" {
-        cidr_block           = "10.0.0.0/16"
-        enable_dns_hostnames = "true"
-
-        tags = {
-            Name = "Hello VPC"  
-        }
-    }
-
-    # INTERNET GATEWAY
-    resource "aws_internet_gateway" "Hello_IGW" {
-        vpc_id = aws_vpc.Hello_VPC.id
-
-        tags = {
-            Name = "Hello IGW"
-        }
-    }
-
-    # SUBNET
-    resource "aws_subnet" "Hello_Public_Subnet" {
-        vpc_id                  = aws_vpc.Hello_VPC.id
-        cidr_block              = "10.0.0.0/24"
-        map_public_ip_on_launch = "true"
-        availability_zone       = "us-east-1a"
-
-        tags = {
-            Name = "Hello Public Subnet"
-        }
-    }
-
-    # ROUTE TABLE
-    resource "aws_route_table" "Hello_Public_Route_Table" {
-        vpc_id = aws_vpc.Hello_VPC.id
-
-        route {
-            cidr_block = "0.0.0.0/0"
-            gateway_id = aws_internet_gateway.Hello_IGW.id
-        }
-
-        tags = {
-            Name = "Hello Public Route Table"
-        }
-    }
-
-    # SUBNET ASSOCIATION
-    resource "aws_route_table_association" "a" {
-      subnet_id      = aws_subnet.Hello_Public_Subnet.id
-      route_table_id = aws_route_table.Hello_Public_Route_Table.id
-    }
-
-    # SECURITY GROUP
-    resource "aws_security_group" "Hello_Security_Group" {
-        name        = "Hello_Security_Group"
-        description = "Hello Security Group"
-        vpc_id      = aws_vpc.Hello_VPC.id
-
-        egress {
-            description = "All to All"
-            from_port   = 0
-            to_port     = 0
-            protocol    = "-1"
-            cidr_blocks = ["0.0.0.0/0"]
-        }
-
-        ingress {
-            description = "All from 10.0.0.0/16"
-            from_port   = 0
-            to_port     = 0
-            protocol    = "-1"
-            cidr_blocks = ["10.0.0.0/16"]
-        }
-
-        ingress {
-            description = "TCP/22 from All"
-            from_port   = 22
-            to_port     = 22
-            protocol    = "tcp"
-            cidr_blocks = ["0.0.0.0/0"]
-        }
-
-        ingress {
-            description = "TCP/80 from All"
-            from_port   = 80
-            to_port     = 80
-            protocol    = "tcp"
-            cidr_blocks = ["0.0.0.0/0"]
-        }
-
-        tags = {
-            Name = "Work Security Group"
-        }
-    }
-
-    # EC2 INSTANCE
-    resource "aws_instance" "hello-isntance" {
-        ami                    = "ami-0c02fb55956c7d316"
-        instance_type          = "t2.micro"
-        subnet_id              = aws_subnet.Hello_Public_Subnet.id
-        vpc_security_group_ids = [aws_security_group.Hello_Security_Group.id]
-
-        tags = {
-            Name = "hellow-isntance"
-        }
-    }
+    $ cat ~/.aws/credentials 
+    [default]
+    aws_access_key_id = ASIAV2XAOBJRRVNBXJL2
+    aws_secret_access_key = ew0xROrRLYino1QRx9ds1UXM7iJUjwnx9E3T
+    aws_session_token = FwoGZXIvYXdzEKv//////////wEaDF0S2MnqCAf5Z8Ov6yK9AaQG4G7B/TiV4VCqyJqJr9YA3n7802QTr92WYxKppnODY8d/8efpvPbUX+MspFfCo+szvoqW7fqIh00s/lJTwbQ0HZRboKjNnoEXF5+c+8soOUfKEXjtuU8BLKi73Hq1GEiubqHdHbxTUgWL5nwF9UnC+ilc/n//1qSbuH+Ltbhc6VgUb6ZbQf9Pn1z/6t46wUofOmHZu8qO37qfNh1K9G9qZjTQ/dvGSSnoSzk93uzbOgw4/KPnSjd0uSRBjIt3NiZ7TlpR/ie4GLu3r4k3YPBB3u4UoYbe3VBzxZ/OhBp1bVvH9FaCi4R8sN1
     ```
 
-4. Pelo Terminal do Visual Studio Code inicializar o Terraform com o correspondente *provider* AWS:
+3. Configurar no diretório *hello* as credenciais de acesso para conexão com a conta AWS do Sandbox:
+
+   - De dentro do diretório *hello*, criar arquivo *credentials* dentro do diretório *.aws*, contendo as credenciais de acesso conforme exemplo.
+
+    ```
+    $ mkdir .aws/
+    $ touch .aws/credentials
+    ```
+    
+    - Colar as credenciais de acesso no arquivo *.aws/credentials*. O arquivo deverá ficar conforme abaixo.
+
+    ```
+    [default]
+    aws_access_key_id = ASIAV2XAOBJRRVNBXJL2
+    aws_secret_access_key = ew0xROrRLYino1QRx9ds1UXM7iJUjwnx9E3T
+    aws_session_token = FwoGZXIvYXdzEKv//////////wEaDF0S2MnqCAf5Z8Ov6yK9AaQG4G7B/TiV4VCqyJqJr9YA3n7802QTr92WYxKppnODY8d/8efpvPbUX+MspFfCo+szvoqW7fqIh00s/lJTwbQ0HZRboKjNnoEXF5+c+8soOUfKEXjtuU8BLKi73Hq1GEiubqHdHbxTUgWL5nwF9UnC+ilc/n//1qSbuH+Ltbhc6VgUb6ZbQf9Pn1z/6t46wUofOmHZu8qO37qfNh1K9G9qZjTQ/dvGSSnoSzk93uzbOgw4/KPnSjd0uSRBjIt3NiZ7TlpR/ie4GLu3r4k3YPBB3u4UoYbe3VBzxZ/OhBp1bVvH9FaCi4R8sN1
+    ```
+
+
+## Planejar e Aplicar código Terraform na conta AWS
+
+1. Inicializar o Terraform com o correspondente *provider* AWS:
 
     ```
     $ cd hello/
@@ -262,33 +205,14 @@ A infraestrutura que o Terraform pode gerenciar inclui componentes de baixo nív
     commands will detect it and remind you to do so if necessary.
     ```
     
-5. Validar o template:
+2. Validar o template:
 
     ```
     $ terraform validate
     Success! The configuration is valid.
     ```
 
-6. Configurar as credenciais de acesso para criação de recursos na conta AWS do Sandbox:
-
-   - Criar arquivo que contém as credenciais de acesso.
-
-    ```
-    $ mkdir .aws/
-    $ touch .aws/credentials
-    ```
-    
-    - Colar as credenciais de acesso no arquivo *.aws/credentials*. O arquivo deverá ficar conforme abaixo.
-
-    ```
-    $ cat ~/.aws/credentials 
-    [default]
-    aws_access_key_id = ASIAV2XAOBJRRVNBXJL2
-    aws_secret_access_key = ew0xROrRLYino1QRx9ds1UXM7iJUjwnx9E3T
-    aws_session_token = FwoGZXIvYXdzEKv//////////wEaDF0S2MnqCAf5Z8Ov6yK9AaQG4G7B/TiV4VCqyJqJr9YA3n7802QTr92WYxKppnODY8d/8efpvPbUX+MspFfCo+szvoqW7fqIh00s/lJTwbQ0HZRboKjNnoEXF5+c+8soOUfKEXjtuU8BLKi73Hq1GEiubqHdHbxTUgWL5nwF9UnC+ilc/n//1qSbuH+Ltbhc6VgUb6ZbQf9Pn1z/6t46wUofOmHZu8qO37qfNh1K9G9qZjTQ/dvGSSnoSzk93uzbOgw4/KPnSjd0uSRBjIt3NiZ7TlpR/ie4GLu3r4k3YPBB3u4UoYbe3VBzxZ/OhBp1bVvH9FaCi4R8sN1
-    ```
-
-7. Inspecionar e criar a infraestrutura virtual. Executar *terraform plan* para inspecionar e depois *terraform apply* para criar os recursos.
+3. Planejar a execução do código Terraform. Executar *terraform plan*.
 
     ```
     $ terraform plan
@@ -582,13 +506,15 @@ A infraestrutura que o Terraform pode gerenciar inclui componentes de baixo nív
     Note: You didn't use the -out option to save this plan, so Terraform can't guarantee to take exactly these 
     actions if you run "terraform apply" now.    
     ```
-    
-7. Validar a criação dos recursos pela AWS Console.
+
+4. Aplicar a execução do código Terraform. Executar *terraform apply* para criar os recursos.
+
+5. Validar a criação dos recursos pela AWS Console.
 
 
-## Clean-up
+## Clean-up dos recursos criados pelo código Terraform na conta AWS
 
-1. Deletar o plano:
+1. Destruir os recursos criados na conta AWS do SandBox.
 
     ```
     $ terraform destroy
@@ -885,3 +811,6 @@ A infraestrutura que o Terraform pode gerenciar inclui componentes de baixo nív
     Destroy complete! Resources: 7 destroyed.
     ```
 
+## Demo do autor
+
+[Vídeo com a demonstração do Hello World](https://youtu.be/tP8png215tE)
