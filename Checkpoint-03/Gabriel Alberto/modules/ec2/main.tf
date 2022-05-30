@@ -40,7 +40,6 @@ resource "aws_security_group" "sg_pub" {
         Name = "sg_pub"
     }
 }
-
 resource "aws_security_group" "sg_priv" {
     name        = "sg_priv"
     description = "Security Group private"
@@ -99,6 +98,22 @@ resource "aws_launch_template" "lt_app_notify" {
     }
 }
 
+# AUTO SCALING GROUP
+resource "aws_autoscaling_group" "asg_app_notify" {
+    name                = "asg_app_notify"
+    vpc_zone_identifier = ["${var.sn_pub_1a_id}", "${var.sn_pub_1c_id}"]
+    desired_capacity    = "${var.desired_capacity}"
+    min_size            = "${var.min_size}"
+    max_size            = "${var.max_size}"
+    target_group_arns   = [aws_lb_target_group.tg_app_notify.arn]
+
+    launch_template {
+        id      = aws_launch_template.lt_app_notify.id
+        version = "$Latest"
+    }
+   
+}
+
 # APPLICATION LOAD BALANCER
 resource "aws_lb" "lb_app_notify" {
     name               = "lb-app-notify"
@@ -133,20 +148,4 @@ resource "aws_lb_listener" "listener_app_notify" {
         type             = "forward"
         target_group_arn = aws_lb_target_group.tg_app_notify.arn
     }
-}
-
-# AUTO SCALING GROUP
-resource "aws_autoscaling_group" "asg_app_notify" {
-    name                = "asg_app_notify"
-    vpc_zone_identifier = ["${var.sn_pub_1a_id}", "${var.sn_pub_1c_id}"]
-    desired_capacity    = "${var.desired_capacity}"
-    min_size            = "${var.min_size}"
-    max_size            = "${var.max_size}"
-    target_group_arns   = [aws_lb_target_group.tg_app_notify.arn]
-
-    launch_template {
-        id      = aws_launch_template.lt_app_notify.id
-        version = "$Latest"
-    }
-   
 }

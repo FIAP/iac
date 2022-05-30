@@ -1,7 +1,7 @@
 # VPC
 resource "aws_vpc" "vpc10" {
-    cidr_block           = "10.0.0.0/16"
-    enable_dns_hostnames = "true"
+    cidr_block           = "${var.vpc_cidr}"
+    enable_dns_hostnames = "${var.vpc_dns_hostnames}"
 
     tags = {
         Name = "vpc10"  
@@ -16,9 +16,9 @@ resource "aws_internet_gateway" "igw_vpc10" {
     }
 }
 # SUBNET
-resource "aws_subnet" "sn_vpc10_pub_1a" {
+resource "aws_subnet" "sn_pub_1a" {
     vpc_id                  = aws_vpc.vpc10.id
-    cidr_block              = "10.0.1.0/24"
+    cidr_block              = "${var.sn_pub_1a_cidr}"
     map_public_ip_on_launch = "true"
     availability_zone       = "us-east-1a"
 
@@ -27,19 +27,9 @@ resource "aws_subnet" "sn_vpc10_pub_1a" {
     }
 }
 # SUBNET
-resource "aws_subnet" "sn_vpc10_priv_1a" {
+resource "aws_subnet" "sn_pub_1c" {
     vpc_id                  = aws_vpc.vpc10.id
-    cidr_block              = "10.0.3.0/24"
-    availability_zone       = "us-east-1a"
-
-    tags = {
-        Name = "sn_vpc10_priv_1a"
-    }
-}
-# SUBNET
-resource "aws_subnet" "sn_vpc10_pub_1c" {
-    vpc_id                  = aws_vpc.vpc10.id
-    cidr_block              = "10.0.2.0/24"
+    cidr_block              = "${var.sn_pub_1c_cidr}"
     map_public_ip_on_launch = "true"
     availability_zone       = "us-east-1c"
 
@@ -48,9 +38,19 @@ resource "aws_subnet" "sn_vpc10_pub_1c" {
     }
 }
 # SUBNET
+resource "aws_subnet" "sn_priv_1a" {
+    vpc_id                  = aws_vpc.vpc10.id
+    cidr_block              = "${var.sn_priv_1a_cidr}"
+    availability_zone       = "us-east-1a"
+
+    tags = {
+        Name = "sn_vpc10_priv_1a"
+    }
+}
+# SUBNET
 resource "aws_subnet" "sn_vpc10_priv_1c" {
     vpc_id                  = aws_vpc.vpc10.id
-    cidr_block              = "10.0.4.0/24"
+    cidr_block              = "${var.sn_priv_1c_cidr}"
     availability_zone       = "us-east-1c"
 
     tags = {
