@@ -118,7 +118,7 @@ resource "aws_autoscaling_group" "asg_app_notify" {
 resource "aws_lb" "lb_app_notify" {
   name               = "lb-app-notify"
   load_balancer_type = "application"
-  subnets            = [var.sn_pub_1a_id", "var.sn_pub_1c_id]
+  subnets            = [var.sn_pub_1a_id, var.sn_pub_1c_id]
   security_groups    = [aws_security_group.sg_pub.id]
 
   tags = {
