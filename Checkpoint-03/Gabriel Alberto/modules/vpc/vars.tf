@@ -23,3 +23,9 @@ variable "sn_priv_1a_cidr" {
 variable "sn_priv_1c_cidr" {
   default = "10.0.4.0/24"
 }
+
+variable "map_public_ip_on_launch" {
+  type        = bool
+  default     = "true"
+}
+
