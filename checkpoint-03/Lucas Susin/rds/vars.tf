@@ -26,7 +26,7 @@ variable "engine_version" {
 
 variable "instance_class" {
   type = string
-  default = "db.t2.micro"
+  default = "db.t3.micro"
 }
 
 variable "storage_type" {
