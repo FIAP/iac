@@ -44,7 +44,6 @@ resource "aws_db_instance" "rds_db_notifier" {
     parameter_group_name   = aws_db_parameter_group.rds_vpc10_pg.name
     vpc_security_group_ids = ["${var.sg_priv_id}"]
     multi_az = true
-    availability_zone = "us-east-1a"
 
     tags = {
         Name = "rds-db-notifier"
