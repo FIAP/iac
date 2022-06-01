@@ -176,9 +176,9 @@ resource "aws_security_group" "vpc10_Security_Group_priv" {
     
     ingress {
         description = "All trafic from 10.0.0.0/16"
-        from_port   = 0
-        to_port     = 0
-        protocol    = "-1"
+        from_port   = 3306
+        to_port     = 3306
+        protocol    = "tcp"
         cidr_blocks = ["10.0.0.0/16"]
     }
 
@@ -223,10 +223,11 @@ resource "aws_db_parameter_group" "rds_vpc10_par_grp" {
 
 # DB INSTANCE
 resource "aws_db_instance" "rds_database_notifier" {
+    multi_az               = true
     identifier             = "rds-database-notifier"
     engine                 = "mysql"
     engine_version         = "8.0.23"
-    instance_class         = "db.t3.small"
+    instance_class         = "db.t2.micro"
     storage_type           = "gp2"
     allocated_storage      = "20"
     max_allocated_storage  = 0
