@@ -30,7 +30,7 @@ module "rds" {
     sn_vpc10_priv_1c_id     = "${module.vpc.sn_vpc10_priv_1c_id}"
     sg_priv_id        = "${module.ec2.sg_priv_id}"
     family            = "mysql8.0"
-    instance_class    = "db.t2.micro"
+    instance_class    = "db.t3.micro"
     storage_type      = "gp2"
     allocated_storage = 20
     db_name           = "notifier"
